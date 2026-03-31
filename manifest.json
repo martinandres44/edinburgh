@@ -1,0 +1,17 @@
+{
+  "name": "Edinburgh Walking Tour",
+  "short_name": "Edinburgh Tour",
+  "description": "Guía de audio para el tour de Edimburgo - Martín & Flor",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%231a1a2e'/><text y='140' x='96' text-anchor='middle' font-size='120'>🏰</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}
