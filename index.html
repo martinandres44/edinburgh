@@ -25,7 +25,7 @@
     --radius: 12px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; overflow: hidden; font-family: 'DM Sans', sans-serif; background: var(--ink); }
+  html, body { height: 100%; overflow: hidden; position: fixed; width: 100%; font-family: 'DM Sans', sans-serif; background: var(--ink); }
 
   /* SPLASH */
   #splash {
@@ -38,7 +38,7 @@
   #splash.hidden { opacity: 0; pointer-events: none; }
 
   /* LAYOUT */
-  #app { height: 100vh; display: flex; flex-direction: column; background: var(--paper); }
+  #app { height: 100%; height: -webkit-fill-available; display: flex; flex-direction: column; background: var(--paper); }
 
   /* HEADER */
   #header {
@@ -79,7 +79,7 @@
   .day-tab.active { color: var(--paper); border-bottom-color: var(--gold); }
 
   /* STOPS LIST */
-  #stops-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  #stops-list { flex: 1; overflow-y: scroll; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
   #stops-list::-webkit-scrollbar { width: 0; }
 
   /* STOP CARD */
@@ -464,6 +464,7 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 55.9501, lng: -3.1910 },
     zoom: 13,
+    gestureHandling: "cooperative",
     mapTypeControl: false, streetViewControl: false, fullscreenControl: false,
     zoomControl: false,
     styles: [
