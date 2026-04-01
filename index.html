@@ -79,22 +79,22 @@
   .day-tab.active { color: var(--paper); border-bottom-color: var(--gold); }
 
   /* STOPS LIST */
-  #stops-list { flex: 1; overflow-y: scroll; -webkit-overflow-scrolling: touch; padding: 12px 12px 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+  #stops-list { flex: 1; min-height: 0; overflow-y: scroll; overflow-x: visible; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
   #stops-list::-webkit-scrollbar { width: 0; }
 
   /* STOP CARD */
   .stop-card {
-    background: white; border-radius: var(--radius); overflow: hidden;
+    background: white; border-radius: var(--radius);
     box-shadow: 0 1px 4px rgba(0,0,0,0.08); cursor: pointer;
     transition: transform 0.15s;
   }
   .stop-card:active { transform: scale(0.99); }
-  .stop-card.day1 { box-shadow: -3px 0 0 var(--day1), 0 1px 4px rgba(0,0,0,0.08); }
-  .stop-card.day2 { box-shadow: -3px 0 0 var(--day2), 0 1px 4px rgba(0,0,0,0.08); }
-  .stop-card.nearby { box-shadow: -3px 0 0 var(--gold), 0 0 0 2px var(--gold), 0 2px 8px rgba(0,0,0,0.15); }
+  .stop-card.day1 { border-left: 4px solid var(--day1); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .stop-card.day2 { border-left: 4px solid var(--day2); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .stop-card.nearby { outline: 2px solid var(--gold); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
   .stop-card.visited { opacity: 0.6; }
 
-  .stop-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+  .stop-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; overflow: visible; }
   .stop-num {
     width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
     justify-content: center; font-size: 0.75rem; font-weight: 500; flex-shrink: 0;
@@ -184,7 +184,7 @@
   /* OVERVIEW PAGE */
   #overview-page { display: none; flex: 1; overflow-y: auto; padding: 16px; flex-direction: column; gap: 12px; }
   #overview-page.active { display: flex; }
-  #stops-page { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+  #stops-page { display: flex; flex-direction: column; flex: 1; min-height: 0; }
   #stops-page.hidden { display: none; }
   .overview-card {
     background: white; border-radius: var(--radius); padding: 16px;
