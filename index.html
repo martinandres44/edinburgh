@@ -3,324 +3,628 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#1a1a2e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Edinburgh Tour">
-<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a1a2e">
 <title>Edinburgh Tour</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --ink: #0e0e0e;
-    --paper: #f5f0e8;
-    --paper2: #ede7d9;
-    --accent: #c8401a;
-    --accent2: #2a5c8a;
-    --gold: #b8962e;
-    --muted: #7a7060;
-    --day1: #c8401a;
-    --day2: #2a5c8a;
-    --radius: 12px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; height: -webkit-fill-available; overflow: hidden; font-family: 'DM Sans', sans-serif; background: var(--ink); }
+:root {
+  --bg: #0f0f1a;
+  --bg2: #16162a;
+  --card: #1e1e35;
+  --card2: #252540;
+  --accent: #c8a96e;
+  --accent2: #e8c98e;
+  --text: #e8e4dc;
+  --muted: #8a8aa0;
+  --green: #4caf7d;
+  --red: #e05c5c;
+  --blue: #5c8de0;
+  --border: rgba(200,169,110,0.2);
+  --radius: 14px;
+  --nav-h: 64px;
+}
 
-  /* SPLASH */
-  #splash {
-    position: fixed; inset: 0; background: var(--ink); display: flex; flex-direction: column;
-    align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.6s;
-  }
-  #splash h1 { font-family: 'Playfair Display', serif; color: var(--paper); font-size: 2.2rem; text-align: center; line-height: 1.2; }
-  #splash p { color: var(--muted); font-size: 0.85rem; margin-top: 8px; letter-spacing: 0.1em; text-transform: uppercase; }
-  .splash-line { width: 40px; height: 1px; background: var(--gold); margin: 20px auto; }
-  #splash.hidden { opacity: 0; pointer-events: none; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-  /* LAYOUT */
-  #app { height: 100vh; height: -webkit-fill-available; display: flex; flex-direction: column; background: var(--paper); }
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
 
-  /* HEADER */
-  #header {
-    background: var(--ink); color: var(--paper); padding: 12px 16px 10px;
-    display: flex; align-items: center; gap: 12px; flex-shrink: 0;
-    border-bottom: 2px solid var(--gold);
-  }
-  #header-back { background: none; border: none; color: var(--paper); font-size: 20px; cursor: pointer; padding: 4px; display: none; }
-  #header-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; flex: 1; }
-  #header-day { font-size: 0.7rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
-  #loc-btn {
-    background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 20px;
-    color: var(--paper); font-size: 0.72rem; padding: 4px 10px; cursor: pointer;
-    display: flex; align-items: center; gap: 5px; white-space: nowrap;
-  }
-  #loc-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
-  #loc-dot.active { background: #4caf50; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  height: -webkit-fill-available;
+}
 
-  /* MAP */
-  #map-container { flex-shrink: 0; position: relative; }
-  #map { width: 100%; height: 220px; touch-action: none; }
-  #map-toggle {
-    position: absolute; bottom: 8px; right: 8px;
-    background: var(--ink); color: var(--paper); border: none;
-    border-radius: 20px; padding: 5px 12px; font-size: 0.72rem; cursor: pointer;
-    font-family: 'DM Sans', sans-serif; opacity: 0.85;
-  }
+/* NAV */
+#bottom-nav {
+  display: flex;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  height: var(--nav-h);
+  flex-shrink: 0;
+  z-index: 100;
+}
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 8px 4px;
+}
+.nav-btn.active { color: var(--accent); }
+.nav-icon { font-size: 20px; }
 
-  /* DAY TABS */
-  #day-tabs { display: flex; background: var(--ink); flex-shrink: 0; }
-  .day-tab {
-    flex: 1; padding: 10px; text-align: center; cursor: pointer;
-    font-size: 0.78rem; font-weight: 500; color: var(--muted);
-    border-bottom: 2px solid transparent; transition: all 0.2s;
-    font-family: 'DM Sans', sans-serif; letter-spacing: 0.05em; text-transform: uppercase;
-  }
-  .day-tab.active { color: var(--paper); border-bottom-color: var(--gold); }
+/* PAGES */
+#pages {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.page {
+  position: absolute;
+  inset: 0;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  display: none;
+  padding: 20px 16px;
+  padding-bottom: calc(var(--nav-h) + 16px);
+}
+.page.active { display: block; }
 
-  /* STOPS LIST */
-  #stops-list { flex: 1; min-height: 0; overflow-y: scroll; overflow-x: visible; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-  #stops-list::-webkit-scrollbar { width: 0; }
+/* HEADER */
+.page-header {
+  margin-bottom: 20px;
+}
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--accent2);
+  line-height: 1.1;
+}
+.page-subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
 
-  /* STOP CARD */
-  .stop-card {
-    background: white; border-radius: var(--radius);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08); cursor: pointer;
-    transition: transform 0.15s;
-  }
-  .stop-card:active { transform: scale(0.99); }
-  .stop-card.day1 { border-left: 4px solid var(--day1); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-  .stop-card.day2 { border-left: 4px solid var(--day2); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-  .stop-card.nearby { outline: 2px solid var(--gold); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-  .stop-card.visited { opacity: 0.6; }
+/* DAY TABS */
+.day-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.day-tabs::-webkit-scrollbar { display: none; }
+.day-tab {
+  flex-shrink: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 8px 16px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.day-tab.active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  font-weight: 700;
+}
 
-  .stop-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; overflow: visible; }
-  .stop-num {
-    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
-    justify-content: center; font-size: 0.75rem; font-weight: 500; flex-shrink: 0;
-    color: white;
-  }
-  .day1 .stop-num { background: var(--day1); }
-  .day2 .stop-num { background: var(--day2); }
-  .stop-info { flex: 1; min-width: 0; }
-  .stop-name { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--ink); }
-  .stop-meta { display: flex; gap: 8px; margin-top: 2px; align-items: center; flex-wrap: wrap; }
-  .stop-time { font-size: 0.72rem; color: var(--muted); }
-  .stop-badge { font-size: 0.65rem; padding: 2px 7px; border-radius: 10px; font-weight: 500; }
-  .badge-paid { background: #e8f5e9; color: #2e7d32; }
-  .badge-free { background: #f3f3f3; color: #666; }
-  .badge-food { background: #fff3e0; color: #e65100; }
-  .badge-nat { background: #e3f2fd; color: #1565c0; }
-  .badge-log { background: #fce4ec; color: #c62828; }
-  .stop-chevron { font-size: 12px; color: var(--muted); transition: transform 0.2s; flex-shrink: 0; }
-  .stop-card.open .stop-chevron { transform: rotate(180deg); }
-  .nearby-label { font-size: 0.65rem; color: var(--gold); font-weight: 500; }
+/* STOP CARDS */
+.stops-list { display: flex; flex-direction: column; gap: 12px; }
 
-  /* STOP BODY */
-  .stop-body { display: none; padding: 0 14px 14px; }
-  .stop-card.open .stop-body { display: block; }
-  .stop-desc { font-size: 0.82rem; color: #444; line-height: 1.6; margin-bottom: 12px; }
+.stop-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.stop-card.visited { opacity: 0.55; border-color: var(--green); }
+.stop-card.visited .stop-num { background: var(--green); }
 
-  /* AUDIO PLAYER */
-  .audio-wrap { background: var(--paper2); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
-  .audio-top { display: flex; align-items: center; gap: 10px; }
-  .play-btn {
-    width: 38px; height: 38px; border-radius: 50%; border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    font-size: 14px; transition: transform 0.1s; color: white;
-  }
-  .day1 .play-btn { background: var(--day1); }
-  .day2 .play-btn { background: var(--day2); }
-  .play-btn:active { transform: scale(0.93); }
-  .audio-right { flex: 1; }
-  .audio-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
-  .prog-bar { height: 3px; background: #ddd; border-radius: 2px; cursor: pointer; }
-  .prog-fill { height: 100%; border-radius: 2px; width: 0%; transition: width 0.3s; }
-  .day1 .prog-fill { background: var(--day1); }
-  .day2 .prog-fill { background: var(--day2); }
-  .audio-hint { font-size: 0.7rem; color: var(--muted); margin-top: 6px; font-style: italic; }
+.stop-card-inner {
+  display: flex;
+  align-items: flex-start;
+  padding: 14px;
+  gap: 12px;
+}
+.stop-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.stop-info { flex: 1; min-width: 0; }
+.stop-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+}
+.stop-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+.stop-time { font-size: 12px; color: var(--muted); }
+.stop-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+.badge-free { background: rgba(76,175,125,0.2); color: var(--green); }
+.badge-paid { background: rgba(200,169,110,0.2); color: var(--accent); }
+.badge-walk { background: rgba(92,141,224,0.2); color: var(--blue); }
 
-  /* TIPS */
-  .tips { display: flex; flex-direction: column; gap: 5px; }
-  .tip { display: flex; gap: 7px; font-size: 0.78rem; color: #555; line-height: 1.4; }
-  .tip-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); margin-top: 6px; flex-shrink: 0; }
+.stop-desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+.stop-chevron { color: var(--muted); font-size: 18px; flex-shrink: 0; margin-top: 6px; }
 
-  /* VISITED BTN */
-  .visited-btn {
-    margin-top: 10px; width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #ddd;
-    background: white; font-family: 'DM Sans', sans-serif; font-size: 0.78rem;
-    color: var(--muted); cursor: pointer; transition: all 0.2s;
-  }
-  .visited-btn.done { background: #f0faf0; color: #2e7d32; border-color: #a5d6a7; }
+/* DETAIL VIEW */
+#detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+}
+#detail-overlay.open { display: flex; }
 
-  /* MAP FULL */
-  #map-container.expanded #map { height: 400px; }
+#detail-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--bg2);
+}
+#detail-back {
+  background: var(--card);
+  border: none;
+  color: var(--text);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+#detail-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  flex: 1;
+  color: var(--accent2);
+}
 
-  /* DETAIL VIEW */
-  #detail-view {
-    position: fixed; inset: 0; background: var(--paper); z-index: 500;
-    display: flex; flex-direction: column; transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  #detail-view.open { transform: translateX(0); }
-  #detail-map { width: 100%; height: 180px; }
-  #detail-scroll { flex: 1; overflow-y: auto; padding: 16px; }
-  #detail-scroll::-webkit-scrollbar { width: 0; }
-  #detail-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--ink); margin-bottom: 4px; }
-  #detail-time { font-size: 0.8rem; color: var(--muted); margin-bottom: 14px; }
-  #detail-desc { font-size: 0.88rem; color: #444; line-height: 1.7; margin-bottom: 16px; }
-  .detail-section-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
+#detail-map {
+  height: 220px;
+  flex-shrink: 0;
+  background: var(--card);
+}
 
-  /* BOTTOM NAV */
-  #bottom-nav {
-    display: flex; background: var(--ink); border-top: 1px solid rgba(255,255,255,0.08);
-    flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom);
-  }
-  .nav-btn { flex: 1; padding: 10px 4px; text-align: center; cursor: pointer; border: none; background: none; color: var(--muted); font-family: 'DM Sans', sans-serif; }
-  .nav-btn.active { color: var(--gold); }
-  .nav-icon { font-size: 18px; display: block; }
-  .nav-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; display: block; }
+#detail-body {
+  flex: 1;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+  padding-bottom: 32px;
+}
 
-  /* OVERVIEW PAGE */
-  #overview-page { display: none; flex: 1; overflow-y: auto; padding: 16px; flex-direction: column; gap: 12px; }
-  #overview-page.active { display: flex; }
-  #stops-page { display: flex; flex-direction: column; flex: 1; min-height: 0; }
-  #stops-page.hidden { display: none; }
-  .overview-card {
-    background: white; border-radius: var(--radius); padding: 16px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  }
-  .overview-title { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--ink); margin-bottom: 4px; }
-  .overview-sub { font-size: 0.78rem; color: var(--muted); }
-  .overview-stats { display: flex; gap: 16px; margin-top: 10px; }
-  .ov-stat { text-align: center; }
-  .ov-num { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--accent); }
-  .ov-lbl { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-  .progress-bar-full { height: 4px; background: #eee; border-radius: 2px; margin-top: 10px; overflow: hidden; }
-  .progress-bar-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.5s; }
-  .info-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; font-size: 0.82rem; color: #444; }
-  .info-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.detail-time-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card2);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+/* AUDIO PLAYER */
+.audio-player {
+  background: var(--card2);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+}
+.audio-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.play-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  color: var(--bg);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.1s;
+}
+.play-btn:active { transform: scale(0.92); }
+.audio-info { flex: 1; }
+.audio-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.prog-bar {
+  height: 4px;
+  background: var(--card);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.5s linear;
+}
+.audio-hint { font-size: 12px; color: var(--muted); margin-top: 8px; font-style: italic; }
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  margin-top: 16px;
+}
+.section-title:first-child { margin-top: 0; }
+
+.detail-desc {
+  font-size: 14px;
+  line-height: 1.65;
+  color: #c8c4bc;
+}
+
+.tips-list { display: flex; flex-direction: column; gap: 8px; }
+.tip-item {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.tip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.visited-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.visited-btn.done { background: var(--green); color: white; border-color: var(--green); }
+
+/* MAP PAGE */
+#map-container {
+  position: absolute;
+  inset: 0;
+  bottom: var(--nav-h);
+}
+#map-page { padding: 0; overflow: hidden; }
+#main-map { width: 100%; height: 100%; }
+
+/* DAY FILTER ON MAP */
+#map-day-filter {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+.map-filter-btn {
+  flex: 1;
+  background: rgba(15,15,26,0.9);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 8px 10px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s;
+}
+.map-filter-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+/* OVERVIEW PAGE */
+.info-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.info-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent2);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(200,169,110,0.1);
+  gap: 12px;
+}
+.info-row:last-child { border-bottom: none; }
+.info-label { font-size: 13px; color: var(--muted); flex-shrink: 0; }
+.info-val { font-size: 13px; color: var(--text); text-align: right; font-weight: 500; }
+
+.progress-section { margin-bottom: 20px; }
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.progress-bar {
+  height: 6px;
+  background: var(--card2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* GPS BUTTON */
+#gps-btn {
+  position: fixed;
+  bottom: calc(var(--nav-h) + 16px);
+  right: 16px;
+  z-index: 50;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-size: 20px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: all 0.2s;
+}
+#gps-btn.active { background: var(--accent); color: var(--bg); }
+#gps-btn.visible { display: flex; }
+
+.gps-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #4488ff;
+  border: 3px solid white;
+  box-shadow: 0 0 0 6px rgba(68,136,255,0.25);
+}
 </style>
 </head>
 <body>
-
-<!-- SPLASH -->
-<div id="splash">
-  <p>Edimburgo · Abril 2026</p>
-  <div class="splash-line"></div>
-  <h1>Edinburgh<br>Walking Tour</h1>
-  <div class="splash-line"></div>
-  <p style="margin-top:0">con Martín & Flor</p>
-</div>
-
-<!-- APP -->
 <div id="app">
+  <!-- PAGES -->
+  <div id="pages">
 
-  <!-- HEADER -->
-  <div id="header">
-    <button id="header-back" onclick="closeDetail()">←</button>
-    <div style="flex:1">
-      <div id="header-title">Edinburgh Tour</div>
-      <div id="header-day">Sábado 18 · Domingo 19 de abril</div>
-    </div>
-    <button id="loc-btn" onclick="toggleLocation()">
-      <div id="loc-dot"></div>
-      <span id="loc-txt">GPS</span>
-    </button>
-  </div>
-
-  <!-- STOPS PAGE -->
-  <div id="stops-page">
-    <!-- MAP -->
-    <div id="map-container">
-      <div id="map"></div>
-      <button id="map-toggle" onclick="toggleMap()">▲ expandir</button>
-    </div>
-
-    <!-- DAY TABS -->
-    <div id="day-tabs">
-      <div class="day-tab active" onclick="switchDay(1)">Sáb 18 · Día 1</div>
-      <div class="day-tab" onclick="switchDay(2)">Dom 19 · Día 2</div>
-    </div>
-
-    <!-- STOPS -->
-    <div id="stops-list"></div>
-  </div>
-
-  <!-- OVERVIEW PAGE -->
-  <div id="overview-page">
-    <div class="overview-card">
-      <div class="overview-title">Resumen del viaje</div>
-      <div class="overview-sub">Edimburgo · 18-19 de abril 2026</div>
-      <div class="overview-stats">
-        <div class="ov-stat"><div class="ov-num" id="ov-visited">0</div><div class="ov-lbl">Visitadas</div></div>
-        <div class="ov-stat"><div class="ov-num">12</div><div class="ov-lbl">Total</div></div>
-        <div class="ov-stat"><div class="ov-num">2</div><div class="ov-lbl">Días</div></div>
+    <!-- TOUR PAGE -->
+    <div class="page active" id="page-tour">
+      <div class="page-header">
+        <div class="page-title">Edinburgh Tour</div>
+        <div class="page-subtitle">Martin & Flor · Abril 2026</div>
       </div>
-      <div class="progress-bar-full"><div class="progress-bar-fill" id="ov-progress" style="width:0%"></div></div>
+
+      <div class="day-tabs">
+        <div class="day-tab active" onclick="switchDay(0)" id="tab-0">🔁 Dom 19/4 · Escala</div>
+        <div class="day-tab" onclick="switchDay(1)" id="tab-1">🏰 Sáb 25/4 · Día 1</div>
+        <div class="day-tab" onclick="switchDay(2)" id="tab-2">🏛 Dom 26/4 · Día 2</div>
+      </div>
+
+      <div id="stops-container" class="stops-list"></div>
     </div>
-    <div class="overview-card">
-      <div class="overview-title">Logística clave</div>
-      <div style="margin-top:10px">
-        <div class="info-row"><span class="info-icon">🏨</span><span>Holiday Inn City Centre — dejá las maletas el domingo, las retirás a las 17:00</span></div>
-        <div class="info-row"><span class="info-icon">🚋</span><span>Tram desde St Andrew Square al aeropuerto — 35 min, cada 7-8 min</span></div>
-        <div class="info-row"><span class="info-icon">✈️</span><span>Vuelo domingo 19 a las 18:00 — salí del hotel a las 17:00</span></div>
-        <div class="info-row"><span class="info-icon">🎫</span><span>Castillo y Holyrood: comprá entradas online con anticipación</span></div>
-        <div class="info-row"><span class="info-icon">⚠️</span><span>Holyrood cierra martes y miércoles — el domingo 19 está abierto</span></div>
+
+    <!-- MAP PAGE -->
+    <div class="page" id="page-map">
+      <div id="map-container">
+        <div id="map-day-filter">
+          <button class="map-filter-btn active" onclick="filterMap(0)" id="mf-0">Dom 19/4</button>
+          <button class="map-filter-btn" onclick="filterMap(1)" id="mf-1">Sáb 25/4</button>
+          <button class="map-filter-btn" onclick="filterMap(2)" id="mf-2">Dom 26/4</button>
+        </div>
+        <div id="main-map"></div>
       </div>
     </div>
-    <div class="overview-card">
-      <div class="overview-title">Día 1 — Sábado 18</div>
-      <div class="overview-sub" style="margin-top:4px">Castillo · Royal Mile · Grassmarket · Museo · Arthur's Seat · Cena</div>
+
+    <!-- OVERVIEW PAGE -->
+    <div class="page" id="page-overview">
+      <div class="page-header">
+        <div class="page-title">Resumen</div>
+        <div class="page-subtitle">Logística y progreso</div>
+      </div>
+
+      <div class="progress-section">
+        <div class="progress-label">
+          <span>Paradas visitadas</span>
+          <span id="prog-text">0 / 0</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-title">🔁 Domingo 19/4 — Escala</div>
+        <div class="info-row"><span class="info-label">Llegada</span><span class="info-val">12:20 PM · Edinburgh Airport</span></div>
+        <div class="info-row"><span class="info-label">Salida</span><span class="info-val">20:30 · vuelo a Dublín</span></div>
+        <div class="info-row"><span class="info-label">Tiempo libre</span><span class="info-val">~6 horas (aprox 4 en centro)</span></div>
+        <div class="info-row"><span class="info-label">Equipaje</span><span class="info-val">Consigna en aeropuerto</span></div>
+        <div class="info-row"><span class="info-label">Tram al centro</span><span class="info-val">~30 min · Edinburgh Waverley</span></div>
+        <div class="info-row"><span class="info-label">Salir del centro</span><span class="info-val">~17:30 para estar a las 18:30</span></div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-title">🏴󠁧󠁢󠁳󠁣󠁴󠁿 Sábado 25/4 — Día principal</div>
+        <div class="info-row"><span class="info-label">Llegada</span><span class="info-val">8:30 AM · Edinburgh Airport</span></div>
+        <div class="info-row"><span class="info-label">Check-in hotel</span><span class="info-val">Dejar valijas, check-in oficial ~15hs</span></div>
+        <div class="info-row"><span class="info-label">Edinburgh Castle</span><span class="info-val">🎫 Entrada a las 13:00 hs</span></div>
+        <div class="info-row"><span class="info-label">Holyroodhouse</span><span class="info-val">🎫 Entrada comprada</span></div>
+        <div class="info-row"><span class="info-label">Cañón</span><span class="info-val">13:00 exacto en el castillo ✓</span></div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-title">🌋 Domingo 26/4 — Día 2</div>
+        <div class="info-row"><span class="info-label">Salida vuelo</span><span class="info-val">13:30 · hacia Frankfurt</span></div>
+        <div class="info-row"><span class="info-label">Aeropuerto</span><span class="info-val">Llegar ~11:30 (tram desde centro ~30 min)</span></div>
+        <div class="info-row"><span class="info-label">Salir del hotel</span><span class="info-val">~10:30 AM con equipaje</span></div>
+        <div class="info-row"><span class="info-label">Tram</span><span class="info-val">Desde St Andrew Square · cada 7-8 min</span></div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-title">🚋 Transporte clave</div>
+        <div class="info-row"><span class="info-label">Aeropuerto ↔ Centro</span><span class="info-val">Edinburgh Trams · £8 aprox</span></div>
+        <div class="info-row"><span class="info-label">Frecuencia tram</span><span class="info-val">Cada 7-8 minutos</span></div>
+        <div class="info-row"><span class="info-label">Duración</span><span class="info-val">~30 minutos</span></div>
+        <div class="info-row"><span class="info-label">Todo el Old Town</span><span class="info-val">A pie — el castillo a 500m de Waverley</span></div>
+      </div>
     </div>
-    <div class="overview-card">
-      <div class="overview-title">Día 2 — Domingo 19</div>
-      <div class="overview-sub" style="margin-top:4px">Stockbridge · Water of Leith · Almuerzo · Holyrood · National Gallery · Aeropuerto</div>
-    </div>
+
   </div>
 
   <!-- BOTTOM NAV -->
-  <div id="bottom-nav">
-    <button class="nav-btn active" onclick="showPage('stops')" id="nav-stops">
-      <span class="nav-icon">🗺</span><span class="nav-label">Tour</span>
+  <nav id="bottom-nav">
+    <button class="nav-btn active" onclick="showPage('tour')" id="nav-tour">
+      <span class="nav-icon">🗺</span><span>Tour</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('map')" id="nav-map">
+      <span class="nav-icon">📍</span><span>Mapa</span>
     </button>
     <button class="nav-btn" onclick="showPage('overview')" id="nav-overview">
-      <span class="nav-icon">📋</span><span class="nav-label">Resumen</span>
+      <span class="nav-icon">📋</span><span>Info</span>
     </button>
-  </div>
-
+  </nav>
 </div>
 
-<!-- DETAIL VIEW -->
-<div id="detail-view">
+<!-- DETAIL OVERLAY -->
+<div id="detail-overlay">
+  <div id="detail-header">
+    <button id="detail-back" onclick="closeDetail()">←</button>
+    <div id="detail-title"></div>
+  </div>
   <div id="detail-map"></div>
-  <div id="detail-scroll">
-    <div id="detail-name"></div>
-    <div id="detail-time"></div>
-    <div class="audio-wrap" id="detail-audio-wrap">
-      <div class="audio-top">
-        <button class="play-btn" id="detail-play-btn" onclick="toggleDetailAudio()">▶</button>
-        <div class="audio-right">
-          <div class="audio-label">Audio narrado · español</div>
-          <div class="prog-bar" id="detail-prog-bar"><div class="prog-fill" id="detail-prog-fill"></div></div>
+  <div id="detail-body">
+    <div class="detail-time-badge" id="detail-time-badge">⏰ <span id="detail-time-text"></span></div>
+    <div class="section-title">Audio narrado</div>
+    <div class="audio-player">
+      <div class="audio-row">
+        <button class="play-btn" id="play-btn" onclick="toggleAudio()">▶</button>
+        <div class="audio-info">
+          <div class="audio-label">Narración en español · Web Speech</div>
+          <div class="prog-bar"><div class="prog-fill" id="prog-fill-audio"></div></div>
         </div>
       </div>
-      <div class="audio-hint" id="detail-audio-hint"></div>
+      <div class="audio-hint" id="audio-hint"></div>
     </div>
-    <div class="detail-section-title">Descripción</div>
-    <div id="detail-desc"></div>
-    <div class="detail-section-title" style="margin-top:16px">Consejos</div>
-    <div id="detail-tips" class="tips"></div>
-    <button class="visited-btn" id="detail-visited-btn" onclick="toggleVisitedDetail()">Marcar como visitado</button>
+    <div class="section-title">Descripción</div>
+    <div class="detail-desc" id="detail-desc"></div>
+    <div class="section-title">Consejos</div>
+    <div class="tips-list" id="detail-tips"></div>
+    <button class="visited-btn" id="visited-btn" onclick="toggleVisited()"></button>
   </div>
 </div>
 
-<!-- Firebase + Maps -->
+<button id="gps-btn" onclick="centerGPS()">📍</button>
+
+<!-- FIREBASE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-  const firebaseConfig = {
+  const cfg = {
     apiKey: "AIzaSyBR30KWy-EUDAEaCePfFrxvaNEpW0eOWxg",
     authDomain: "edinburgh-ff62d.firebaseapp.com",
     projectId: "edinburgh-ff62d",
@@ -328,497 +632,513 @@
     messagingSenderId: "793309111899",
     appId: "1:793309111899:web:470a9f6741a4651d1f817e"
   };
-
-  const fbApp = initializeApp(firebaseConfig);
-  const db = getFirestore(fbApp);
-
+  const app = initializeApp(cfg);
+  const db = getFirestore(app);
   window._db = db;
-  window._fsDoc = doc;
-  window._fsSetDoc = setDoc;
-  window._fsGetDoc = getDoc;
-  window._fbReady = true;
+  window._doc = doc;
+  window._setDoc = setDoc;
+  window._getDoc = getDoc;
   window.dispatchEvent(new Event('fbready'));
 </script>
 
 <script>
-const STOPS = {
-  1: [
-    { id:'s1_1', num:1, name:'Edinburgh Castle', time:'9:30 AM', badge:'Entrada paga', badgeClass:'badge-paid',
-      lat:55.9485947, lng:-3.1999135,
-      desc:'El punto de partida del día. Comprá las entradas online con anticipación — son más baratas y evitás la fila. El castillo abre a las 9:30 AM. Calculá 2.5 a 3 horas: el Crown Room, St Margaret\'s Chapel, los cañones y el disparo de las 13:00 en punto.',
-      tips:['Comprá entradas online antes del viaje — ahorrás plata y tiempo de fila','El cañón se dispara a la 1:00 PM exacta — coordiná para estar ahí','Salís por el Castle Esplanade directo a la Royal Mile'],
-      audio:'Edinburgh Castle fue residencia real, prisión, cuartel militar y símbolo nacional. La roca volcánica sobre la que se asienta tiene 700 millones de años y fue habitada por humanos desde el 900 antes de Cristo. Acá estuvo prisionero el rey David II, se celebraron bodas reales y se dispararon cañones en guerras que moldearon Europa. El cañón de la una tiene su origen en 1861: los capitanes de los barcos en el Firth of Forth lo usaban para ajustar sus cronómetros.'
-    },
-    { id:'s1_2', num:2, name:'Royal Mile y los closes', time:'12:30 PM', badge:'Gratis', badgeClass:'badge-free',
-      lat:55.9501093, lng:-3.188021,
-      desc:'Bajás desde el Castle Esplanade por la calle más famosa de Escocia. El secreto está en los closes — los estrechos callejones medievales que se abren a ambos lados. Victoria Street, justo antes del Grassmarket, es la calle en curva de dos niveles que inspiró a J.K. Rowling para Diagon Alley.',
-      tips:['Victoria Street está a la derecha bajando — no te la pierdas','Cada close tiene su historia: Brodie\'s Close, Anchor Close, Mary King\'s Close','Greyfriars Kirkyard está a 2 cuadras — el cementerio con el perro Bobby'],
-      audio:'La Royal Mile no es una calle única sino cinco calles con nombres distintos: Castlehill, Lawnmarket, High Street, Canongate y Abbey Strand. En la Edad Media era la zona más densamente poblada de Europa. Los tenements llegaban a 14 pisos. Victoria Street, con su forma curva y sus dos niveles, fue la inspiración de J.K. Rowling para Diagon Alley, la calle mágica de Harry Potter.'
-    },
-    { id:'s1_3', num:3, name:'Grassmarket — almuerzo', time:'1:00 PM', badge:'Almuerzo', badgeClass:'badge-food',
-      lat:55.9473405, lng:-3.1961492,
-      desc:'El mercado medieval de la ciudad, hoy el barrio más animado de Edimburgo. Vistas directas al castillo desde cualquier mesa. Hay una placa en el pavimento marcando el sitio exacto del cadalso. La historia más increíble: Maggie Dickson sobrevivió la horca en 1724 y vivió 40 años más.',
-      tips:['Maggie Dickson\'s pub para algo auténtico con vista al castillo','La placa de las ejecuciones está en el centro de la plaza','Calculá 45-60 min para almorzar tranquilo'],
-      audio:'Grassmarket fue durante siglos el mercado de ganado de Edimburgo. La historia más increíble es la de Maggie Dickson, ejecutada en 1724. Su cuerpo fue llevado en un carruaje cuando de repente empezó a golpear la madera desde adentro — había sobrevivido la horca. Según la ley escocesa, como ya había sido ejecutada, quedó libre. Vivió otros 40 años y el pub que lleva su nombre sigue abierto hoy.'
-    },
-    { id:'s1_4', num:4, name:'National Museum of Scotland', time:'2:15 PM', badge:'Gratis', badgeClass:'badge-free',
-      lat:55.9469995, lng:-3.1905666,
-      desc:'A dos cuadras del Grassmarket. Entrada completamente gratuita. Con 45 minutos alcanza para los highlights: Dolly la oveja clonada, la guillotina escocesa llamada la Maiden, y la terraza del piso 7 con vistas panorámicas al castillo.',
-      tips:['Dolly la oveja (piso 1) y la terraza (piso 7) son los imperdibles','45 minutos es suficiente si vas directo a los highlights','Buena opción si llueve — es enorme'],
-      audio:'El National Museum alberga más de 12 millones de objetos. Acá están el Monymusk Reliquary del año 700, la Maiden — la guillotina escocesa usada para ejecutar nobles — y Dolly, la primera oveja clonada del mundo, nacida en Edimburgo en 1996. También está el ajedrez vikingo del siglo XII encontrado en la isla de Lewis, cuyas piezas están repartidas entre este museo y el British Museum en Londres.'
-    },
-    { id:'s1_5', num:5, name:"Arthur's Seat", time:'3:15 PM', badge:'Naturaleza', badgeClass:'badge-nat',
-      lat:55.9440825, lng:-3.1618324,
-      desc:'El volcán extinto en el centro de Edimburgo. La subida más popular toma 45 minutos. Las vistas desde arriba son las mejores de la ciudad — el castillo, el Firth of Forth y los Pentland Hills. En abril hay luz hasta las 8 PM.',
-      tips:['Desde el National Museum: taxi hasta Holyrood (~5 min) o 25 min caminando','Llevá abrigo — arriba vuela el viento aunque abajo haga calor','La ruta más fácil sale desde el parking de Holyrood Palace'],
-      audio:'Arthur\'s Seat es un volcán extinto de 350 millones de años. Fue acá donde el geólogo James Hutton observó en el siglo XVIII las rocas que le permitieron formular el concepto de tiempo geológico profundo: la idea de que la Tierra tiene miles de millones de años. Antes de Hutton, la humanidad creía que el planeta tenía apenas 6.000 años. Este volcán, en el centro de una ciudad, cambió para siempre la manera en que entendemos la historia de la Tierra.'
-    },
-    { id:'s1_6', num:6, name:'Cena en el Old Town', time:'5:30 PM', badge:'Cena', badgeClass:'badge-food',
-      lat:55.9490, lng:-3.1950,
-      desc:'Terminás el día bajando desde Arthur\'s Seat de vuelta al Old Town. El Grassmarket o la zona de Cowgate tienen las mejores opciones para cenar sin reserva. Si querés algo más tranquilo, Canongate tiene restaurantes con menos turismo.',
-      tips:['The Witchery (cerca del castillo) si querés algo especial — reserva previa','Canongate tiene opciones más locales y menos turísticas','Cowgate debajo del Grassmarket para algo más animado y barato'],
-      audio:'El Old Town de Edimburgo es Patrimonio de la Humanidad desde 1995. Pero a diferencia de otros centros históricos europeos, este sigue siendo un barrio vivo. La división entre Old Town y New Town no es solo geográfica: durante siglos fue también social. Los pobres vivían hacinados en los tenements medievales del Old Town. Los ricos cruzaron el puente hacia el New Town georgiano. Hoy esa distinción se ha invertido completamente.'
-    }
-  ],
-  2: [
-    { id:'s2_1', num:1, name:'Stockbridge', time:'9:30 AM', badge:'Barrio · Gratis', badgeClass:'badge-free',
-      lat:55.959782, lng:-3.2064774,
-      desc:'El barrio más querido de los edimburgueses. El domingo funciona el Stockbridge Market — mercado de productores locales con comida, artesanías y plantas. La calle principal Raeburn Place tiene cafés independientes y librerías de viejo.',
-      tips:['El Stockbridge Market funciona los domingos de 10:00 a 17:00','St Stephen Street: las tiendas más alternativas e interesantes','Tomá el desayuno acá antes de arrancar'],
-      audio:'Stockbridge fue durante siglos un pueblo aparte de Edimburgo, separado por el Water of Leith. El puente que cruzaba el río se llamaba Stock Bridge — el puente del ganado. El barrio tiene una tradición artística fuerte: el pintor Henry Raeburn, uno de los más importantes del siglo XVIII escocés, vivió y trabajó acá. Hoy Stockbridge es el barrio más buscado para vivir en Edimburgo.'
-    },
-    { id:'s2_2', num:2, name:'Water of Leith → Dean Village', time:'10:30 AM', badge:'Naturaleza · Gratis', badgeClass:'badge-nat',
-      lat:55.9460272, lng:-3.2346154,
-      desc:'Bajás al río y seguís el sendero hacia el oeste durante 25 minutos. El tramo entre Stockbridge y Dean Village es el más hermoso: árboles que forman un túnel verde sobre el agua. Dean Village es un antiguo molino medieval perfectamente conservado.',
-      tips:['Entrá al walkway desde el puente principal de Stockbridge','Dean Village está a 25-30 minutos caminando río arriba','El Well Court (edificio victoriano de ladrillo rojo) es el más fotogénico'],
-      audio:'El Water of Leith fue el motor industrial de Edimburgo durante siglos. A lo largo de sus 35 kilómetros hubo más de 70 molinos de agua. Dean Village era el centro de la industria molinera desde el siglo XII. Los molineros de Dean tenían tanto poder que tenían sus propios jueces y leyes. Hoy el río corre entre apartamentos de lujo y jardines silvestres.'
-    },
-    { id:'s2_3', num:3, name:'Almuerzo en el centro', time:'12:00 PM', badge:'Almuerzo', badgeClass:'badge-food',
-      lat:55.9509847, lng:-3.1985487,
-      desc:'Volvés caminando desde Dean Village al centro — unos 20 minutos. Almorzá en Princes Street Gardens o en algún café del New Town antes de bajar a Holyrood.',
-      tips:['Princes Street tiene opciones para comer con vista al castillo','El New Town (George Street) tiene restaurantes más tranquilos','Calculá salir hacia Holyrood no más tarde de las 13:30'],
-      audio:'Princes Street es la calle comercial más famosa de Escocia, pero su historia es extraña: durante siglos estuvo prohibido construir en el lado sur de la calle para preservar las vistas al castillo y al Old Town. Esa restricción urbanística del siglo XVIII es la razón por la que hoy Princes Street tiene tiendas solo de un lado y jardines del otro.'
-    },
-    { id:'s2_4', num:4, name:'Palace of Holyroodhouse', time:'1:45 PM', badge:'Entrada paga', badgeClass:'badge-paid',
-      lat:55.9527138, lng:-3.1722724,
-      desc:'La residencia oficial del rey en Escocia, al final de la Royal Mile. La audioguía incluida en español es excelente. Guía por los apartamentos de Mary Queen of Scots, donde fue asesinado su secretario David Rizzio, y por los State Apartments.',
-      tips:['Comprá entradas online antes — evitás fila','Audioguía en español incluida sin cargo adicional','No se permiten fotos dentro de los apartamentos','Cierra a las 4:30 PM el domingo — entrás con tiempo holgado'],
-      audio:'Holyrood Palace comenzó como abadía en 1128, fundada por el rey David I. La historia más oscura ocurrió en 1566: el secretario de Mary Queen of Scots, David Rizzio, fue apuñalado 56 veces en la habitación de la reina por un grupo liderado por su propio marido, Lord Darnley. Hoy el palacio sigue siendo residencia activa: cuando el rey Carlos III está en Escocia, nadie más puede entrar.'
-    },
-    { id:'s2_5', num:5, name:'Scottish National Gallery', time:'3:30 PM', badge:'Gratis', badgeClass:'badge-free',
-      lat:55.950902, lng:-3.1956862,
-      desc:'El cierre cultural del viaje. Una de las mejores colecciones de arte de Gran Bretaña, completamente gratis. Velázquez, Rembrandt, El Greco, Vermeer, Monet, Degas y una sala entera de pintores escoceses.',
-      tips:['Sala 5 (maestros holandeses) y sala 10 (Velázquez y El Greco) son los imperdibles','El café del subsuelo es tranquilo — bueno para el último descanso','Salís a las 5:00 PM para buscar maletas y llegar al aeropuerto'],
-      audio:'La Scottish National Gallery guarda una colección que rivaliza con museos mucho más famosos. Acá está el San Jerónimo de El Greco, el An Old Woman Cooking Eggs de Velázquez pintado cuando tenía apenas 19 años. La joya oculta es el cuadro más famoso del pintor Henry Raeburn — el mismo que vivía en Stockbridge que visitamos esta mañana.'
-    },
-    { id:'s2_6', num:6, name:'Holiday Inn → Aeropuerto', time:'5:00 PM', badge:'Logística', badgeClass:'badge-log',
-      lat:55.9524, lng:-3.1883,
-      desc:'Salís de la galería, caminás 10 minutos al Holiday Inn City Centre, buscás las maletas y tomás el tram al aeropuerto desde St Andrew Square. El tram tarda 35 minutos y sale cada 7-8 minutos.',
-      tips:['Tram desde St Andrew Square — 35 min al aeropuerto','Sale cada 7-8 minutos — no necesitás horario fijo','Comprá el ticket en la máquina de la parada con tarjeta'],
-      audio:'Edimburgo tiene uno de los sistemas de tram más nuevos de Gran Bretaña, inaugurado en 2014 y extendido a Leith en 2023. Curiosamente, Edimburgo tuvo tranvías desde 1871 hasta 1956, cuando fueron desmantelados. La ciudad tardó casi 60 años en recuperar su red tranviaria. El tram que van a tomar hoy usa exactamente la misma traza que el tranvía original de hace 150 años.'
-    }
-  ]
-};
-
-let currentDay = 1;
-let map = null;
-let detailMap = null;
-let userMarker = null;
-let stopMarkers = [];
-let watchId = null;
-let locationActive = false;
-let visited = {};
-let openCard = null;
-let currentDetailStop = null;
-let detailAudioPlaying = false;
-let detailAudioInterval = null;
-let mapExpanded = false;
-
-// Load visited from localStorage
-try { visited = JSON.parse(localStorage.getItem('edinburgh_visited') || '{}'); } catch(e){}
-
-function saveVisited() {
-  localStorage.setItem('edinburgh_visited', JSON.stringify(visited));
-  updateOverview();
-  // Sync to Firebase if ready
-  if(window._fbReady) {
-    const d = window._fsDoc(window._db, 'tours', 'martin-flor');
-    window._fsSetDoc(d, { visited }, { merge: true }).catch(()=>{});
+// ============================================================
+// DATA
+// ============================================================
+const DAYS = [
+  {
+    label: '🔁 Dom 19/4 · Escala',
+    shortLabel: 'Dom 19/4',
+    note: 'Llegás 12:20 hs · Vuelo a Dublín 20:30 hs · ~4 horas en el centro',
+    stops: [
+      {
+        id: 'd0_1', num: 1,
+        name: 'Arthur\'s Seat',
+        time: '13:30 – 15:30',
+        badge: 'Gratis', badgeClass: 'badge-free',
+        lat: 55.9441, lng: -3.1618,
+        desc: 'La cumbre más icónica de Edimburgo: un volcán extinto de 251 metros dentro de la ciudad. La subida dura 45-60 minutos por un sendero bien marcado. Desde arriba tenés una vista de 360° de toda la ciudad, el estuario del Forth y las colinas de Fife. Es la imagen de Edimburgo que te quedás grabada. Nada de tickets, nada de filas — solo vos y el paisaje.',
+        tips: ['Calzado cómodo — hay piedras sueltas en el último tramo', 'Llevá campera: arriba puede soplar viento fuerte', 'Tiempo total caminando: 1h45 incluida la bajada', 'Salís directo al Holyrood Park hacia el Royal Mile'],
+        audio: 'Arthur\'s Seat es un volcán extinto que se formó hace 350 millones de años. Hoy es el corazón del Holyrood Park, un parque real de 260 hectáreas dentro de la ciudad. La subida es relativamente sencilla pero el recompensa es extraordinaria: desde la cima podés ver el castillo de Edimburgo al oeste, el Firth of Forth al norte, y los Pentland Hills al sur. Es el lugar favorito de los escoceses para despejarse la cabeza, y después de subir, vas a entender por qué.'
+      },
+      {
+        id: 'd0_2', num: 2,
+        name: 'Royal Mile · Old Town',
+        time: '15:30 – 16:45',
+        badge: 'A pie', badgeClass: 'badge-walk',
+        lat: 55.9495, lng: -3.1883,
+        desc: 'La columna vertebral del Old Town medieval de Edimburgo, que conecta el castillo con el palacio. Son exactamente una milla real escocesa. A lo largo de la calle vas a encontrar wynd tras wynd — los estrechos callejones que salen hacia ambos lados — con pubs centenarios, tiendas de whisky y artesanías, músicos callejeros. Victoria Street, justo a mitad de camino, es la calle curvada de colores que inspiró a Diagon Alley de Harry Potter.',
+        tips: ['Bajá por los wynds que salen a ambos lados — esconden gemas', 'Victoria Street es obligatoria para fotos', 'Greyfriars Kirkyard está a 2 cuadras — el cementerio con las tumbas de HP'],
+        audio: 'El Royal Mile no es solo una calle: es la historia de Escocia condensada en un kilómetro y medio. Cada adoquín tiene siglos encima. En la Edad Media aquí vivían nobles, comerciantes y artesanos apilados en edificios de hasta 10 pisos, llamados tenements. Los closes y wynds que salen hacia los costados eran el laberinto urbano donde transcurría la vida cotidiana. Hoy siguen ahí, prácticamente sin cambios. Si caminás despacio y mirás para arriba, ves la ciudad medieval sobreviviendo debajo del barniz turístico.'
+      },
+      {
+        id: 'd0_3', num: 3,
+        name: 'Princes Street Gardens · Café',
+        time: '16:45 – 17:30',
+        badge: 'Gratis', badgeClass: 'badge-free',
+        lat: 55.9510, lng: -3.1963,
+        desc: 'Los jardines al pie del castillo son el mejor cierre para la escala. Sentate en el pasto con vista al castillo, tomá un café en el quiosco, y aprovechá los últimos minutos antes de tomar el tram al aeropuerto. En abril suele haber flores y el castillo iluminado al atardecer es espectacular.',
+        tips: ['El tram sale desde St Andrew Square — a 7 min caminando', 'Tomá el tram a las 17:30 para llegar al aeropuerto ~18:00', 'Checkea el horario del tram antes de sentarte — cada 7-8 min'],
+        audio: 'Los Princes Street Gardens ocupan el lecho de lo que fue el Nor Loch, un lago artificial creado en el siglo 15 como defensa natural del castillo. En el siglo 19 lo drenaron y lo convirtieron en estos jardines que hoy son el pulmón verde del centro. Desde acá tenés la mejor vista posible del castillo: la roca volcánica emergiendo 80 metros sobre los jardines, con los edificios victorianos del Old Town al fondo. Es la postal de Edimburgo.'
+      }
+    ]
+  },
+  {
+    label: '🏰 Sáb 25/4 · Día 1',
+    shortLabel: 'Sáb 25/4',
+    note: 'Llegás 8:30 hs · Castillo 13:00 hs (ticket) · Holyroodhouse (ticket)',
+    stops: [
+      {
+        id: 'd1_1', num: 1,
+        name: 'Llegada · Desayuno Old Town',
+        time: '8:30 – 10:30',
+        badge: 'A pie', badgeClass: 'badge-walk',
+        lat: 55.9510, lng: -3.1936,
+        desc: 'El tram te deja en Princes Street / St Andrew Square. Dejás las valijas en el hotel (no van a poder hacer check-in todavía, pero guardan el equipaje). Después, primer contacto con el Old Town: caminata libre por la zona de Grassmarket y Victoria Street. Desayuno o brunch en algún café del Royal Mile antes de ponerse el modo turista.',
+        tips: ['El hotel normalmente guarda valijas aunque no hayas hecho check-in', 'Grassmarket tiene buenos cafés para desayunar', 'Reservá check-in formal para las 15hs si el hotel no confirma antes'],
+        audio: 'Bienvenidos a Edimburgo. La ciudad tiene dos personalidades completamente distintas: el Old Town medieval con sus castillos y wynds oscuros, y el New Town georgiano del siglo 18, diseñado en cuadrícula perfecta. Hoy van a recorrer el corazón del Old Town, que creció orgánicamente durante siglos alrededor de la roca del castillo. Cada calle, cada callejón, tiene una historia. Prepárense para caminar sobre adoquines y subir cuestas — Edimburgo es una ciudad vertical.'
+      },
+      {
+        id: 'd1_2', num: 2,
+        name: 'Victoria Street · Greyfriars',
+        time: '10:30 – 12:00',
+        badge: 'Gratis', badgeClass: 'badge-free',
+        lat: 55.9487, lng: -3.1932,
+        desc: 'Victoria Street es la calle más fotogénica de Edimburgo: curva, con fachadas de colores y tiendas independientes. J.K. Rowling la usó como inspiración para Diagon Alley. A dos cuadras está el Greyfriars Kirkyard, el cementerio del siglo 17 donde están enterrados personajes que inspiraron a Harry Potter — Voldemort, McGonagall, y otros. También está la tumba del perro Greyfriars Bobby. Gratis, siempre abierto.',
+        tips: ['Buscá la tumba de "Thomas Riddell" — el verdadero Voldemort', 'La estatua de Greyfriars Bobby está en la entrada del cementerio', 'Hay una tienda de Harry Potter al lado — si les interesa'],
+        audio: 'Victoria Street fue construida en la década de 1840 como parte de un proyecto de renovación urbana. La curva pronunciada que la hace tan fotogénica era necesaria para salvar el desnivel del terreno. Las tiendas del nivel inferior son anteriores — algunas datan del siglo 18. El Greyfriars Kirkyard, justo detrás, es uno de los cementerios más importantes de Escocia. Aquí se firmó el National Covenant en 1638, un documento que desafió al rey Carlos I y marcó el inicio de la guerra civil escocesa. J.K. Rowling, que vivía en Edimburgo cuando escribió Harry Potter, venía a caminar por este cementerio.'
+      },
+      {
+        id: 'd1_3', num: 3,
+        name: 'Scotch Whisky Experience',
+        time: '12:00 – 13:00',
+        badge: 'Entrada paga', badgeClass: 'badge-paid',
+        lat: 55.9487, lng: -3.1959,
+        desc: 'Está literalmente al lado de la entrada del castillo. Tour de una hora muy entretenido con una "barrile ride" que explica la historia del whisky, cata de maltas de las cuatro regiones de Escocia, y acceso a la colección de whisky más grande del mundo con 3.384 botellas. Muy bien hecho, no hace falta ser fanático para disfrutarlo. Reservá online.',
+        tips: ['Reservá online — puede llenarse los fines de semana de abril', 'Elegí el Silver Tour si no son grandes conocedores', 'La entrada te da un vaso para llevarte de recuerdo'],
+        audio: 'Escocia produce más del 70% del whisky que se consume en el mundo. La palabra "whisky" viene del gaélico uisge beatha, que significa "agua de vida". Hay cinco regiones productoras en Escocia: Speyside, Highland, Lowland, Campbeltown e Islay. Cada una tiene un perfil distinto: los de Islay son ahumados y marinos, los de Speyside son frutales y suaves, los de Highland son los más variados. El Scotch Whisky Experience tiene la colección privada más grande del mundo — 3.384 botellas, algunas con más de 100 años.'
+      },
+      {
+        id: 'd1_4', num: 4,
+        name: 'Edinburgh Castle',
+        time: '13:00 – 15:30',
+        badge: '🎫 Ticket comprado', badgeClass: 'badge-paid',
+        lat: 55.9486, lng: -3.1999,
+        desc: 'Turno a las 13:00. El castillo data del siglo 12 y fue residencia real, prisión militar y fortaleza. Lo imprescindible: el Crown Room (las joyas de la corona escocesa — las más antiguas de Gran Bretaña), St Margaret\'s Chapel (la construcción habitada más antigua de Edimburgo, siglo 12), el gran cañón Mons Meg y las vistas panorámicas desde los bastiones. El cañón se dispara a la 1pm exacta — coordiná para estar en el patio cuando entrés.',
+        tips: ['El cañón se dispara justo cuando entrés — mirá hacia las murallas norte a las 13:00', 'Crown Room es lo que no podés saltarte — las joyas de la corona escocesa', 'St Margaret\'s Chapel es diminuta pero tiene 900 años', 'Calculá 2-2.5 horas para verlo todo sin apuro'],
+        audio: 'El Edinburgh Castle domina la ciudad desde una roca volcánica que se formó hace 340 millones de años. Los primeros asentamientos humanos en esta roca datan del siglo 2 antes de Cristo. El castillo como estructura existe desde el siglo 12, aunque la mayoría de lo que ven hoy es del siglo 16 en adelante. Fue residencia de los reyes escoceses hasta que la corte se trasladó a Londres en 1603, cuando Jacobo VI de Escocia se convirtió también en Jacobo I de Inglaterra. Desde entonces quedó como símbolo nacional. Las Honours of Scotland — la corona, el cetro y la espada de estado — son las joyas de la corona más antiguas de Gran Bretaña, anteriores incluso a las inglesas.'
+      },
+      {
+        id: 'd1_5', num: 5,
+        name: 'Royal Mile · Almuerzo tardío',
+        time: '15:30 – 16:30',
+        badge: 'A pie', badgeClass: 'badge-walk',
+        lat: 55.9499, lng: -3.1883,
+        desc: 'Bajá caminando desde el castillo por el Royal Mile. Es el momento perfecto para parar a comer algo en uno de los pubs del camino. Recomendados: The Devil\'s Advocate, Deacon Brodie\'s Tavern (el original del Doctor Jekyll), o cualquier pub que tenga whisky cask soup y haggis bons. Tardarás unos 20 minutos en caminar hasta Holyrood sin parar.',
+        tips: ['Deacon Brodie fue la inspiración real de Stevenson para Jekyll & Hyde', 'El haggis en empanadas (haggis bon bons) es la forma más amigable para probarlo', 'Guardá espacio — la cena de esta noche en un pub escocés es la experiencia completa'],
+        audio: 'Deacon William Brodie fue un respetado ciudadano de Edimburgo en el siglo 18: carpintero de día, ladrón de noche. Usaba las llaves que obtenía en su trabajo para robar casas. Fue capturado, juzgado y ahorcado en 1788. Robert Louis Stevenson, que creció en Edimburgo, usó su historia como inspiración para El Extraño Caso del Dr. Jekyll y Mr. Hyde. La taberna que lleva su nombre está en el mismo lugar donde tenía su taller. El Royal Mile está lleno de estas historias superpuestas — cada adoquín tiene siglos de capas.'
+      },
+      {
+        id: 'd1_6', num: 6,
+        name: 'Palace of Holyroodhouse',
+        time: '16:30 – 18:30',
+        badge: '🎫 Ticket comprado', badgeClass: 'badge-paid',
+        lat: 55.9527, lng: -3.1723,
+        desc: 'La residencia oficial de la monarquía en Escocia, al final del Royal Mile. Construido en el siglo 16 sobre las ruinas de una abadía del siglo 12. Lo más impactante: el Great Gallery con 89 retratos de reyes escoceses pintados en dos años, las habitaciones de María, Reina de Escocia (donde presenció el asesinato de su secretario Rizzio), y las ruinas de la Holyrood Abbey. El audioguía incluido es excelente.',
+        tips: ['No se pueden sacar fotos adentro — guardá el teléfono y disfrutá en vivo', 'Las ruinas de la Abbey detrás del palacio son impresionantes', 'El Great Gallery tiene 89 retratos pintados por un solo artista en 2 años — todos imaginarios', 'Calculá 1.5-2 horas'],
+        audio: 'Holyrood Palace tiene siglos de drama real acumulado. El momento más conocido ocurrió en 1566, cuando un grupo de nobles escoceses entró a las habitaciones de María, Reina de Escocia, y asesinó a puñaladas a su secretario David Rizzio delante de ella. María estaba embarazada en ese momento — el bebé se convertiría en Jacobo VI. El palacio fue destruido y reconstruido varias veces. Carlos II lo mandó reconstruir completamente en estilo barroco en la década de 1670 y esa es la versión que ven hoy. La monarquía lo usa todavía — cuando el rey visita Escocia, se hospeda acá.'
+      },
+      {
+        id: 'd1_7', num: 7,
+        name: 'Calton Hill · Atardecer',
+        time: '19:00 – 20:00',
+        badge: 'Gratis', badgeClass: 'badge-free',
+        lat: 55.9550, lng: -3.1827,
+        desc: 'La subida más fácil de Edimburgo — 15 minutos de caminata — con las mejores vistas panorámicas de la ciudad. En la cima hay monumentos neoclásicos (el "Partenón inacabado" de Escocia, el Nelson Monument) y vistas de 360°: el castillo al oeste, el Firth of Forth al norte, Arthur\'s Seat al este, el New Town al sur. En abril el atardecer es alrededor de las 20:30-21:00, así que llegás con luz perfecta.',
+        tips: ['El National Monument (las columnas griegas) fue planeado como réplica del Partenón — se quedaron sin fondos en 1829', 'Nelson Monument (la torre) tiene escaleras internas — se puede subir', 'Atardecer en abril: ~20:30-21:00 — perfecta luz para fotos'],
+        audio: 'Calton Hill fue el centro de la Ilustración escocesa del siglo 18. Desde acá, los filósofos, arquitectos y escritores de Edimburgo soñaron con convertir la ciudad en la "Atenas del Norte". El National Monument, esas columnas griegas en la cima, iba a ser una réplica del Partenón en homenaje a los caídos en las guerras napoleónicas. Empezaron en 1826, construyeron 12 columnas, y se quedaron sin fondos. Lo dejaron así. Hoy sus columnas inacabadas son uno de los símbolos más queridos de Edimburgo — los escoceses lo llaman "la vergüenza de Edimburgo" con cierto orgullo.'
+      },
+      {
+        id: 'd1_8', num: 8,
+        name: 'Cena · Pub con música',
+        time: '20:30 – 22:30',
+        badge: 'A pie', badgeClass: 'badge-walk',
+        lat: 55.9483, lng: -3.1888,
+        desc: 'El Old Town los sábados a la noche es lo que tiene que ser. Buscá un pub con música en vivo escocesa — hay varios que tienen sesiones de folk los fines de semana. Opciones: The Royal Oak (folk music casi todos los días), Sandy Bell\'s (el pub de folk más famoso de Escocia), o The Bow Bar (sin música pero whisky extraordinario). Pedí haggis, neeps and tatties, o simplemente una pinta de Tennent\'s con fish and chips.',
+        tips: ['The Royal Oak y Sandy Bell\'s tienen música folk en vivo los sábados', 'The Bow Bar no tiene música pero tiene la mejor selección de whiskies del Old Town', 'Los pubs cierran tarde — no hay apuro'],
+        audio: 'La música folk escocesa no es entretenimiento turístico — es una tradición viva. Las sesiones en los pubs son informales: músicos que se juntan, sacan los instrumentos, y tocan. Nadie cobra, nadie dirige. El repertorio mezcla reels y jigs tradicionales con canciones jacobitas del siglo 18 y baladas más modernas. Los instrumentos clásicos son la gaita, el fiddle (violín), el tin whistle y el bodhrán (un tambor de mano). Si tenés suerte de caer en una sesión, dejate llevar — es la experiencia más auténtica de Escocia.'
+      }
+    ]
+  },
+  {
+    label: '🏛 Dom 26/4 · Día 2',
+    shortLabel: 'Dom 26/4',
+    note: 'Vuelo a Frankfurt 13:30 hs · Salir del hotel ~10:30 hs con equipaje',
+    stops: [
+      {
+        id: 'd2_1', num: 1,
+        name: 'Desayuno · Broughton Street',
+        time: '8:30 – 9:15',
+        badge: 'A pie', badgeClass: 'badge-walk',
+        lat: 55.9566, lng: -3.1864,
+        desc: 'Broughton Street es la calle más animada del New Town para desayunar un domingo. Cafés independientes con buen café de filtro, tostadas con manteca escocesa y el ambiente tranquilo del barrio antes de que se llene. A 15 minutos caminando del Old Town. Recomendado: Brew Lab o The Bross Bagels para algo más sustancioso.',
+        tips: ['Brew Lab tiene excelente café de especialidad', 'The Bross Bagels — los mejores bagels de Edimburgo, abre temprano los domingos', 'Broughton Street conecta fácil con Charlotte Square y el New Town clásico'],
+        audio: 'Broughton Street es el corazón del barrio conocido como Broughton Village, el más bohemio del New Town. A diferencia del New Town georgiano más formal, este sector tiene cafés independientes, librerías de segunda mano y una atmósfera relajada que los locales adoran. Es donde viene a desayunar la gente de Edimburgo cuando no quiere turistear — lo cual lo convierte, paradójicamente, en la experiencia más auténtica de la ciudad.'
+      },
+      {
+        id: 'd2_2', num: 2,
+        name: 'Charlotte Square · New Town georgiano',
+        time: '9:15 – 10:15',
+        badge: 'Gratis', badgeClass: 'badge-free',
+        lat: 55.9519, lng: -3.2049,
+        desc: 'Charlotte Square es la joya del New Town: una plaza georgiana perfectamente simétrica diseñada por Robert Adam en 1791. Las fachadas de piedra arenisca son idénticas en los cuatro lados — en realidad son edificios individuales disfrazados de palacio único. Desde acá caminá por George Street hacia St Andrew Square disfrutando las perspectivas largas, las fachadas imponentes y el contraste total con el Old Town medieval del día anterior.',
+        tips: ['Mirá los detalles de las puertas georgianas — cada una tiene un color distinto', 'George Street tiene las mejores fachadas para fotos', 'Moray Place (5 min a pie) es incluso más espectacular si tenés tiempo'],
+        audio: 'El New Town de Edimburgo es uno de los conjuntos de arquitectura georgiana mejor preservados del mundo. Fue construido entre 1765 y 1850 como respuesta al hacinamiento medieval del Old Town. El arquitecto James Craig ganó el concurso con un diseño en cuadrícula perfecta — tres calles paralelas conectadas por dos plazas. Charlotte Square, diseñada por Robert Adam, fue el remate occidental. Lo fascinante es que cada "palacio" es en realidad un grupo de casas privadas diseñadas para parecer un único edificio monumental. La ilusión es perfecta y se mantiene hasta hoy.'
+      },
+      {
+        id: 'd2_3', num: 3,
+        name: 'St Andrew Square · Tram al aeropuerto',
+        time: '10:15 – 10:45',
+        badge: 'A pie', badgeClass: 'badge-walk',
+        lat: 55.9529, lng: -3.1928,
+        desc: 'El punto de cierre perfecto. St Andrew Square es el extremo este del New Town, donde el tram al aeropuerto hace su parada central. Pasá por el hotel a buscar las valijas, caminá hasta la plaza (o tomá un taxi si el hotel está lejos), y subís al tram. 30 minutos y estás en el aeropuerto con tiempo de sobra para el vuelo de las 13:30.',
+        tips: ['Tram cada 7-8 minutos desde St Andrew Square', '30 minutos al aeropuerto — llegás ~11:15-11:30', 'Para vuelo 13:30 es tiempo perfecto', 'Tram directo — sin transbordos, muy fácil con valijas'],
+        audio: 'St Andrew Square cierra el círculo del New Town. Es el punto donde la ciudad ilustrada del siglo 18 se conecta con el presente. El tranvía que sale desde acá sigue la misma ruta que el primer tranvía a vapor de Edimburgo de 1871. Mientras esperás, mirá el Melville Monument en el centro de la plaza — una columna de 41 metros coronada por Henry Dundas, el político escocés más poderoso de su época, que controló la política escocesa durante 30 años. Edimburgo siempre tiene una historia más para contar.'
+      }
+    ]
   }
-}
+];
 
+// ============================================================
+// STATE
+// ============================================================
+let currentDay = 0;
+let currentPage = 'tour';
+let mapFilterDay = 0;
+let visited = {};
+let detailStop = null;
+let speechSynth = window.speechSynthesis;
+let utterance = null;
+let speaking = false;
+let gpsWatcher = null;
+let userMarker = null;
+let mainMap = null;
+let detailMapObj = null;
+let mainMarkers = [];
+let mapInitialized = false;
+let detailMapInitialized = false;
+
+// ============================================================
+// FIREBASE
+// ============================================================
 window.addEventListener('fbready', async () => {
   try {
-    const d = window._fsDoc(window._db, 'tours', 'martin-flor');
-    const snap = await window._fsGetDoc(d);
-    if(snap.exists() && snap.data().visited) {
-      visited = { ...visited, ...snap.data().visited };
-      saveVisited();
-      renderStops();
-    }
-  } catch(e){}
+    const snap = await window._getDoc(window._doc(window._db, 'visits', 'user1'));
+    if (snap.exists()) visited = snap.data();
+  } catch(e) {}
+  renderStops();
+  updateProgress();
 });
 
-// MAPS
-function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: { lat: 55.9501, lng: -3.1910 },
-    zoom: 13,
-    gestureHandling: "cooperative",
-    mapTypeControl: false, streetViewControl: false, fullscreenControl: false,
-    zoomControl: false,
-    styles: [
-      { featureType:'all', elementType:'geometry', stylers:[{saturation:-30}] },
-      { featureType:'water', elementType:'geometry', stylers:[{color:'#c8dce8'}] },
-      { featureType:'road.highway', elementType:'geometry', stylers:[{color:'#f5d78e'}] }
-    ]
-  });
-  renderMapMarkers();
+async function saveVisited() {
+  try {
+    await window._setDoc(window._doc(window._db, 'visits', 'user1'), visited);
+  } catch(e) {}
 }
 
-function renderMapMarkers() {
-  stopMarkers.forEach(m => m.setMap(null));
-  stopMarkers = [];
-  const stops = STOPS[currentDay];
-  stops.forEach((stop, i) => {
-    const color = currentDay === 1 ? '#c8401a' : '#2a5c8a';
-    const marker = new google.maps.Marker({
-      position: { lat: stop.lat, lng: stop.lng },
-      map,
-      title: stop.name,
-      label: { text: String(stop.num), color: 'white', fontSize: '11px', fontWeight: 'bold' },
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 14,
-        fillColor: visited[stop.id] ? '#aaa' : color,
-        fillOpacity: 1,
-        strokeColor: 'white',
-        strokeWeight: 2
-      }
-    });
-    marker.addListener('click', () => openDetail(stop));
-    stopMarkers.push(marker);
-  });
-}
-
-function toggleMap() {
-  mapExpanded = !mapExpanded;
-  const mc = document.getElementById('map-container');
-  const btn = document.getElementById('map-toggle');
-  mc.classList.toggle('expanded', mapExpanded);
-  btn.textContent = mapExpanded ? '▼ reducir' : '▲ expandir';
-  if(map) google.maps.event.trigger(map, 'resize');
-}
-
-// LOCATION
-function toggleLocation() {
-  if(locationActive) {
-    stopLocation();
-  } else {
-    startLocation();
-  }
-}
-
-function startLocation() {
-  if(!navigator.geolocation) { alert('Tu dispositivo no soporta GPS'); return; }
-  document.getElementById('loc-txt').textContent = 'buscando...';
-  watchId = navigator.geolocation.watchPosition(pos => {
-    locationActive = true;
-    document.getElementById('loc-dot').classList.add('active');
-    document.getElementById('loc-txt').textContent = 'GPS activo';
-    const { latitude: lat, longitude: lng } = pos.coords;
-    if(!userMarker) {
-      userMarker = new google.maps.Marker({
-        position: { lat, lng }, map,
-        icon: { path: google.maps.SymbolPath.CIRCLE, scale: 8, fillColor:'#4285F4', fillOpacity:1, strokeColor:'white', strokeWeight:2 }
-      });
-    } else {
-      userMarker.setPosition({ lat, lng });
-    }
-    map.panTo({ lat, lng });
-    checkNearbyStops(lat, lng);
-  }, err => {
-    document.getElementById('loc-txt').textContent = 'GPS';
-    document.getElementById('loc-dot').classList.remove('active');
-  }, { enableHighAccuracy: true, maximumAge: 5000 });
-}
-
-function stopLocation() {
-  if(watchId) navigator.geolocation.clearWatch(watchId);
-  locationActive = false;
-  document.getElementById('loc-dot').classList.remove('active');
-  document.getElementById('loc-txt').textContent = 'GPS';
-}
-
-function checkNearbyStops(lat, lng) {
-  const stops = STOPS[currentDay];
-  stops.forEach(stop => {
-    const d = getDistance(lat, lng, stop.lat, stop.lng);
-    const card = document.getElementById('card_' + stop.id);
-    if(card) card.classList.toggle('nearby', d < 150);
-  });
-}
-
-function getDistance(lat1, lng1, lat2, lng2) {
-  const R = 6371000;
-  const dLat = (lat2-lat1)*Math.PI/180;
-  const dLng = (lng2-lng1)*Math.PI/180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-}
-
-// RENDER STOPS
+// ============================================================
+// RENDER
+// ============================================================
 function renderStops() {
-  const list = document.getElementById('stops-list');
-  list.innerHTML = '';
-  const stops = STOPS[currentDay];
-  stops.forEach(stop => {
-    const isVisited = !!visited[stop.id];
-    const card = document.createElement('div');
-    card.className = `stop-card day${currentDay}${isVisited?' visited':''}`;
-    card.id = 'card_' + stop.id;
-    const tips = stop.tips.map(t => `<div class="tip"><div class="tip-dot"></div><span>${t}</span></div>`).join('');
-    card.innerHTML = `
-      <div class="stop-header" onclick="toggleCard('${stop.id}')">
-        <div class="stop-num">${stop.num}</div>
+  const day = DAYS[currentDay];
+  const container = document.getElementById('stops-container');
+  const note = `<div style="background:var(--card2);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--muted);border:1px solid var(--border)">ℹ️ ${day.note}</div>`;
+  const cards = day.stops.map(s => {
+    const v = visited[s.id];
+    return `
+    <div class="stop-card ${v ? 'visited' : ''}" onclick="openDetail('${s.id}')">
+      <div class="stop-card-inner">
+        <div class="stop-num">${v ? '✓' : s.num}</div>
         <div class="stop-info">
-          <div class="stop-name">${stop.name}</div>
+          <div class="stop-name">${s.name}</div>
           <div class="stop-meta">
-            <span class="stop-time">${stop.time}</span>
-            <span class="stop-badge ${stop.badgeClass}">${stop.badge}</span>
-            <span class="nearby-label" id="nl_${stop.id}" style="display:none">● Cerca</span>
+            <span class="stop-time">⏰ ${s.time}</span>
+            <span class="stop-badge ${s.badgeClass}">${s.badge}</span>
           </div>
+          <div class="stop-desc">${s.desc.substring(0, 100)}...</div>
         </div>
-        <div class="stop-chevron">▾</div>
+        <div class="stop-chevron">›</div>
       </div>
-      <div class="stop-body">
-        <p class="stop-desc">${stop.desc}</p>
-        <div class="audio-wrap">
-          <div class="audio-top">
-            <button class="play-btn" id="pb_${stop.id}" onclick="toggleAudio('${stop.id}',event)">▶</button>
-            <div class="audio-right">
-              <div class="audio-label">Audio narrado · español</div>
-              <div class="prog-bar"><div class="prog-fill" id="pf_${stop.id}"></div></div>
-            </div>
-          </div>
-          <div class="audio-hint">"${stop.audio.substring(0,90)}..."</div>
-        </div>
-        <div class="tips">${tips}</div>
-        <button class="visited-btn${isVisited?' done':''}" id="vb_${stop.id}" onclick="toggleVisited('${stop.id}',event)">
-          ${isVisited ? '✓ Visitado' : 'Marcar como visitado'}
-        </button>
-      </div>`;
-    list.appendChild(card);
-  });
-  updateOverview();
+    </div>`;
+  }).join('');
+  container.innerHTML = note + cards;
 }
 
-// CARD TOGGLE
-let activeAudio = { id:null, utterance:null, interval:null };
-
-function toggleCard(id) {
-  const card = document.getElementById('card_' + id);
-  const isOpen = card.classList.contains('open');
-  document.querySelectorAll('.stop-card.open').forEach(c => {
-    c.classList.remove('open');
-  });
-  if(!isOpen) card.classList.add('open');
+function switchDay(d) {
+  currentDay = d;
+  document.querySelectorAll('.day-tab').forEach((t, i) => t.classList.toggle('active', i === d));
+  renderStops();
 }
 
-// AUDIO
-function toggleAudio(id, e) {
-  if(e) e.stopPropagation();
-  if(!window.speechSynthesis) { alert('Tu navegador no soporta síntesis de voz.'); return; }
-  if(activeAudio.id === id) {
-    stopAudio();
-    return;
-  }
-  stopAudio();
-  const stop = findStop(id);
-  if(!stop) return;
-  activeAudio.id = id;
-  const btn = document.getElementById('pb_' + id);
-  const fill = document.getElementById('pf_' + id);
-  if(btn) btn.textContent = '⏸';
-  const u = new SpeechSynthesisUtterance(stop.audio);
-  u.lang = 'es-ES'; u.rate = 0.92; u.pitch = 1;
-  let p = 0;
-  activeAudio.interval = setInterval(() => { if(p < 95){ p += 0.7; if(fill) fill.style.width = p+'%'; }}, 200);
-  u.onend = () => { clearInterval(activeAudio.interval); if(fill) fill.style.width='100%'; if(btn) btn.textContent='▶'; activeAudio.id=null; };
-  u.onerror = () => { clearInterval(activeAudio.interval); if(btn) btn.textContent='▶'; activeAudio.id=null; };
-  activeAudio.utterance = u;
-  window.speechSynthesis.speak(u);
-}
-
-function stopAudio() {
-  if(window.speechSynthesis) window.speechSynthesis.cancel();
-  if(activeAudio.interval) clearInterval(activeAudio.interval);
-  if(activeAudio.id) {
-    const btn = document.getElementById('pb_' + activeAudio.id);
-    const fill = document.getElementById('pf_' + activeAudio.id);
-    if(btn) btn.textContent='▶';
-    if(fill) fill.style.width='0%';
-  }
-  activeAudio = { id:null, utterance:null, interval:null };
-}
-
-// VISITED
-function toggleVisited(id, e) {
-  if(e) e.stopPropagation();
-  visited[id] = !visited[id];
-  if(!visited[id]) delete visited[id];
-  saveVisited();
-  const card = document.getElementById('card_' + id);
-  const btn = document.getElementById('vb_' + id);
-  if(card) card.classList.toggle('visited', !!visited[id]);
-  if(btn) { btn.classList.toggle('done', !!visited[id]); btn.textContent = visited[id] ? '✓ Visitado' : 'Marcar como visitado'; }
-  renderMapMarkers();
-}
-
-// DETAIL VIEW
-function openDetail(stop) {
-  currentDetailStop = stop;
-  stopAudio();
-  document.getElementById('detail-name').textContent = stop.name;
-  document.getElementById('detail-time').textContent = stop.time + ' · ' + (stop.badgeClass.includes('paid') ? 'Entrada paga' : stop.badge);
-  document.getElementById('detail-desc').textContent = stop.desc;
-  document.getElementById('detail-audio-hint').textContent = '"' + stop.audio.substring(0,100) + '..."';
-  const tips = stop.tips.map(t=>`<div class="tip"><div class="tip-dot"></div><span>${t}</span></div>`).join('');
-  document.getElementById('detail-tips').innerHTML = tips;
-  const vb = document.getElementById('detail-visited-btn');
-  vb.classList.toggle('done', !!visited[stop.id]);
-  vb.textContent = visited[stop.id] ? '✓ Visitado' : 'Marcar como visitado';
-  document.getElementById('detail-play-btn').textContent = '▶';
-  document.getElementById('detail-prog-fill').style.width = '0%';
-
-  // Day color class
-  const dv = document.getElementById('detail-view');
-  dv.classList.remove('day1','day2');
-  const day = Object.keys(STOPS).find(d => STOPS[d].find(s=>s.id===stop.id));
-  if(day) dv.classList.add('day'+day);
-
-  // Mini map in detail
-  if(!detailMap) {
-    detailMap = new google.maps.Map(document.getElementById('detail-map'), {
-      center: { lat: stop.lat, lng: stop.lng }, zoom: 15,
-      mapTypeControl:false, streetViewControl:false, fullscreenControl:false, zoomControl:false
+function updateProgress() {
+  let total = 0, done = 0;
+  DAYS.forEach(day => {
+    day.stops.forEach(s => {
+      total++;
+      if (visited[s.id]) done++;
     });
-  } else {
-    detailMap.setCenter({ lat: stop.lat, lng: stop.lng });
-    detailMap.setZoom(15);
-  }
-  new google.maps.Marker({ position:{ lat:stop.lat, lng:stop.lng }, map:detailMap, title:stop.name });
+  });
+  document.getElementById('prog-text').textContent = `${done} / ${total}`;
+  document.getElementById('prog-fill').style.width = total ? `${(done/total)*100}%` : '0%';
+}
 
-  document.getElementById('detail-view').classList.add('open');
-  document.getElementById('header-back').style.display = 'block';
-  document.getElementById('header-title').textContent = stop.name;
+// ============================================================
+// DETAIL
+// ============================================================
+function openDetail(stopId) {
+  let stop = null;
+  DAYS.forEach(d => d.stops.forEach(s => { if (s.id === stopId) stop = s; }));
+  if (!stop) return;
+  detailStop = stop;
+
+  document.getElementById('detail-title').textContent = stop.name;
+  document.getElementById('detail-time-text').textContent = stop.time;
+  document.getElementById('detail-desc').textContent = stop.desc;
+  document.getElementById('audio-hint').textContent = stop.audio.substring(0, 80) + '...';
+  document.getElementById('detail-tips').innerHTML = stop.tips.map(t => `<div class="tip-item"><div class="tip-dot"></div><span>${t}</span></div>`).join('');
+  const vBtn = document.getElementById('visited-btn');
+  vBtn.textContent = visited[stop.id] ? '✓ Marcado como visitado' : 'Marcar como visitado';
+  vBtn.className = 'visited-btn' + (visited[stop.id] ? ' done' : '');
+  document.getElementById('detail-overlay').classList.add('open');
+  stopAudio();
+  loadDetailMap(stop);
 }
 
 function closeDetail() {
-  document.getElementById('detail-view').classList.remove('open');
-  document.getElementById('header-back').style.display = 'none';
-  document.getElementById('header-title').textContent = 'Edinburgh Tour';
-  stopDetailAudio();
-}
-
-function toggleDetailAudio() {
-  if(!window.speechSynthesis || !currentDetailStop) return;
-  if(detailAudioPlaying) {
-    window.speechSynthesis.cancel();
-    clearInterval(detailAudioInterval);
-    detailAudioPlaying = false;
-    document.getElementById('detail-play-btn').textContent = '▶';
-    document.getElementById('detail-prog-fill').style.width = '0%';
-    return;
-  }
-  detailAudioPlaying = true;
-  const btn = document.getElementById('detail-play-btn');
-  const fill = document.getElementById('detail-prog-fill');
-  btn.textContent = '⏸';
-  const u = new SpeechSynthesisUtterance(currentDetailStop.audio);
-  u.lang='es-ES'; u.rate=0.92; u.pitch=1;
-  let p=0;
-  detailAudioInterval = setInterval(()=>{ if(p<95){p+=0.7;fill.style.width=p+'%';}},200);
-  u.onend=()=>{ clearInterval(detailAudioInterval); fill.style.width='100%'; btn.textContent='▶'; detailAudioPlaying=false; };
-  u.onerror=()=>{ clearInterval(detailAudioInterval); btn.textContent='▶'; detailAudioPlaying=false; };
-  window.speechSynthesis.speak(u);
-}
-
-function stopDetailAudio() {
-  if(window.speechSynthesis) window.speechSynthesis.cancel();
-  clearInterval(detailAudioInterval);
-  detailAudioPlaying=false;
-}
-
-function toggleVisitedDetail() {
-  if(!currentDetailStop) return;
-  const id = currentDetailStop.id;
-  visited[id] = !visited[id];
-  if(!visited[id]) delete visited[id];
-  saveVisited();
-  const vb = document.getElementById('detail-visited-btn');
-  vb.classList.toggle('done', !!visited[id]);
-  vb.textContent = visited[id] ? '✓ Visitado' : 'Marcar como visitado';
-  renderMapMarkers();
-  // Update list card
-  const card = document.getElementById('card_' + id);
-  const btn = document.getElementById('vb_' + id);
-  if(card) card.classList.toggle('visited', !!visited[id]);
-  if(btn) { btn.classList.toggle('done',!!visited[id]); btn.textContent=visited[id]?'✓ Visitado':'Marcar como visitado'; }
-}
-
-// DAY SWITCH
-function switchDay(day) {
-  currentDay = day;
+  document.getElementById('detail-overlay').classList.remove('open');
   stopAudio();
-  document.querySelectorAll('.day-tab').forEach((t,i) => t.classList.toggle('active', i+1===day));
+  detailStop = null;
+}
+
+// ============================================================
+// DETAIL MAP
+// ============================================================
+function loadDetailMap(stop) {
+  if (typeof google === 'undefined') return;
+  const el = document.getElementById('detail-map');
+  const map = new google.maps.Map(el, {
+    center: { lat: stop.lat, lng: stop.lng },
+    zoom: 16,
+    disableDefaultUI: true,
+    gestureHandling: 'none',
+    styles: darkMapStyle()
+  });
+  new google.maps.Marker({ position: { lat: stop.lat, lng: stop.lng }, map, title: stop.name });
+}
+
+// ============================================================
+// MAIN MAP
+// ============================================================
+function initMainMap() {
+  if (mapInitialized || typeof google === 'undefined') return;
+  mapInitialized = true;
+  const el = document.getElementById('main-map');
+  mainMap = new google.maps.Map(el, {
+    center: { lat: 55.9487, lng: -3.1888 },
+    zoom: 14,
+    disableDefaultUI: true,
+    gestureHandling: 'greedy',
+    styles: darkMapStyle()
+  });
+  renderMapMarkers(0);
+}
+
+function filterMap(d) {
+  mapFilterDay = d;
+  document.querySelectorAll('.map-filter-btn').forEach((b, i) => b.classList.toggle('active', i === d));
+  renderMapMarkers(d);
+}
+
+function renderMapMarkers(d) {
+  if (!mainMap) return;
+  mainMarkers.forEach(m => m.setMap(null));
+  mainMarkers = [];
+  DAYS[d].stops.forEach((s, i) => {
+    const m = new google.maps.Marker({
+      position: { lat: s.lat, lng: s.lng },
+      map: mainMap,
+      label: { text: String(i + 1), color: '#0f0f1a', fontWeight: 'bold', fontSize: '12px' },
+      title: s.name,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 16,
+        fillColor: '#c8a96e',
+        fillOpacity: 1,
+        strokeColor: '#0f0f1a',
+        strokeWeight: 2
+      }
+    });
+    m.addListener('click', () => openDetail(s.id));
+    mainMarkers.push(m);
+  });
+  const bounds = new google.maps.LatLngBounds();
+  DAYS[d].stops.forEach(s => bounds.extend({ lat: s.lat, lng: s.lng }));
+  mainMap.fitBounds(bounds, 60);
+}
+
+// ============================================================
+// GPS
+// ============================================================
+function startGPS() {
+  if (!navigator.geolocation) return;
+  gpsWatcher = navigator.geolocation.watchPosition(pos => {
+    const latlng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    if (!userMarker && mainMap) {
+      userMarker = new google.maps.Marker({
+        position: latlng, map: mainMap,
+        icon: { path: google.maps.SymbolPath.CIRCLE, scale: 9, fillColor: '#4488ff', fillOpacity: 1, strokeColor: 'white', strokeWeight: 2.5 }
+      });
+    } else if (userMarker) {
+      userMarker.setPosition(latlng);
+    }
+  }, null, { enableHighAccuracy: true, maximumAge: 5000 });
+}
+
+function centerGPS() {
+  if (!userMarker || !mainMap) return;
+  mainMap.panTo(userMarker.getPosition());
+}
+
+// ============================================================
+// AUDIO
+// ============================================================
+function toggleAudio() {
+  if (!detailStop) return;
+  if (speaking) { stopAudio(); return; }
+  utterance = new SpeechSynthesisUtterance(detailStop.audio);
+  utterance.lang = 'es-ES';
+  utterance.rate = 0.9;
+  const voices = speechSynth.getVoices();
+  const esVoice = voices.find(v => v.lang.startsWith('es'));
+  if (esVoice) utterance.voice = esVoice;
+  utterance.onstart = () => {
+    speaking = true;
+    document.getElementById('play-btn').textContent = '⏸';
+    animateProgress();
+  };
+  utterance.onend = () => {
+    speaking = false;
+    document.getElementById('play-btn').textContent = '▶';
+    document.getElementById('prog-fill-audio').style.width = '100%';
+  };
+  speechSynth.speak(utterance);
+}
+
+function stopAudio() {
+  speechSynth.cancel();
+  speaking = false;
+  const btn = document.getElementById('play-btn');
+  if (btn) btn.textContent = '▶';
+  const fill = document.getElementById('prog-fill-audio');
+  if (fill) fill.style.width = '0%';
+}
+
+function animateProgress() {
+  if (!utterance || !speaking) return;
+  const fill = document.getElementById('prog-fill-audio');
+  if (!fill) return;
+  let p = 0;
+  const iv = setInterval(() => {
+    if (!speaking) { clearInterval(iv); return; }
+    p = Math.min(p + 1, 95);
+    fill.style.width = p + '%';
+  }, 300);
+}
+
+// ============================================================
+// VISITED
+// ============================================================
+function toggleVisited() {
+  if (!detailStop) return;
+  visited[detailStop.id] = !visited[detailStop.id];
+  const vBtn = document.getElementById('visited-btn');
+  vBtn.textContent = visited[detailStop.id] ? '✓ Marcado como visitado' : 'Marcar como visitado';
+  vBtn.className = 'visited-btn' + (visited[detailStop.id] ? ' done' : '');
   renderStops();
-  renderMapMarkers();
-  const center = day===1 ? {lat:55.9490,lng:-3.1920} : {lat:55.9520,lng:-3.1980};
-  if(map) map.panTo(center);
+  updateProgress();
+  saveVisited();
 }
 
-// PAGE NAV
-function showPage(page) {
-  document.getElementById('stops-page').classList.toggle('hidden', page!=='stops');
-  document.getElementById('overview-page').classList.toggle('active', page==='overview');
-  document.getElementById('nav-stops').classList.toggle('active', page==='stops');
-  document.getElementById('nav-overview').classList.toggle('active', page==='overview');
-}
-
-// OVERVIEW
-function updateOverview() {
-  const total = Object.keys(STOPS[1]).length + Object.keys(STOPS[2]).length;
-  const count = Object.keys(visited).filter(k=>visited[k]).length;
-  const el = document.getElementById('ov-visited');
-  const prog = document.getElementById('ov-progress');
-  if(el) el.textContent = count;
-  if(prog) prog.style.width = Math.round(count/total*100)+'%';
-}
-
-function findStop(id) {
-  for(const day of [1,2]) {
-    const s = STOPS[day].find(s=>s.id===id);
-    if(s) return s;
+// ============================================================
+// NAV
+// ============================================================
+function showPage(p) {
+  currentPage = p;
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  document.getElementById('nav-' + p).classList.add('active');
+  const gpsBtn = document.getElementById('gps-btn');
+  if (p === 'map') {
+    gpsBtn.classList.add('visible');
+    setTimeout(initMainMap, 100);
+    if (!gpsWatcher) startGPS();
+  } else {
+    gpsBtn.classList.remove('visible');
   }
-  return null;
 }
 
-// INIT
-setTimeout(() => {
-  document.getElementById('splash').classList.add('hidden');
+// ============================================================
+// GOOGLE MAPS INIT
+// ============================================================
+function initMaps() {
+  // Maps ready — main map inits lazily when page opened
+}
+
+function darkMapStyle() {
+  return [
+    { elementType: 'geometry', stylers: [{ color: '#1a1a2e' }] },
+    { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1a2e' }] },
+    { elementType: 'labels.text.fill', stylers: [{ color: '#8a8aa0' }] },
+    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#252540' }] },
+    { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#16162a' }] },
+    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0d1117' }] },
+    { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#1e1e35' }] },
+    { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#1a2e20' }] },
+    { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#1e1e35' }] }
+  ];
+}
+
+window.initMaps = initMaps;
+window.showPage = showPage;
+window.switchDay = switchDay;
+window.openDetail = openDetail;
+window.closeDetail = closeDetail;
+window.toggleAudio = toggleAudio;
+window.toggleVisited = toggleVisited;
+window.centerGPS = centerGPS;
+window.filterMap = filterMap;
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  // Try to load from localStorage while Firebase loads
+  try {
+    const local = localStorage.getItem('visited_edinburgh');
+    if (local) visited = JSON.parse(local);
+  } catch(e) {}
   renderStops();
-  updateOverview();
-}, 1800);
+  updateProgress();
+});
 </script>
 
+<!-- GOOGLE MAPS - Replace YOUR_MAPS_API_KEY with actual key -->
 <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDd1awyyxSOpLYWzKeLZLggQnolcznG0IM&callback=initMap">
+  src="https://maps.googleapis.com/maps/api/js?key=YOUR_MAPS_API_KEY&callback=initMaps">
 </script>
 
 <script>
-if("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js").catch(()=>{});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 </script>
 </body>
